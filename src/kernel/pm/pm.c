@@ -125,3 +125,109 @@ PUBLIC void pm_init(void)
 
 	enable_interrupts();
 }
+
+
+/* Formats the text */
+void swap(char* s)
+{
+	int i, j;
+	char c;
+
+	for (i = 0, j = kstrlen(s)-1; i<j; i++, j--)
+	{
+		c = s[i];
+		s[i] = s[j];
+		s[j] = c;
+	}
+}
+
+void chj(int n, char* s)
+{
+	int i, sign;
+
+	if ((sign = n) < 0)
+		n = -n;
+
+	i = 0;
+	do
+	{
+		s[i++] = n % 10 + '0';
+	} while ((n /= 10) > 0);
+
+	if (sign < 0)
+		s[i++] = '-';
+
+	s[i] = '\0';
+	swap(s);
+}
+
+void pValue(int value, char* s, int padding)
+{
+	int i,len,size;
+
+	chj(value, s);
+	len = padding - kstrlen(s);
+
+	size = kstrlen(s);
+	for(i=size; i<len+size; i++)
+		*(s+i) = ' ';
+
+	*(s+i) = '\0';
+}
+
+/* Show process request information */
+PUBLIC void do_get_process_info(pid_t pid, struct process_buf *buf){
+	struct process *proc;
+	int aux = 1;
+
+	//Confere a tabela de processos
+	for (proc = FIRST_PROC; proc <= LAST_PROC; proc++){
+		if(proc->pid == pid){
+			buf->pid = proctab[aux].pid;
+			buf->state = proctab[aux].state;
+			buf->priority = proctab[aux].priority;
+			buf->utime = proctab[aux].utime;
+			buf->ktime = proctab[aux].ktime;
+		}
+		aux++;
+	}
+
+	char p[26];
+	char priority[26];
+	char utime[26];
+	char ktime[26];
+	char counter[26];
+
+	const char *states[7];
+	states[0] = "DEAD";
+	states[1] = "ZOMBIE";
+	states[2] = "RUNNING";
+	states[3] = "READY";
+	states[4] = "WAITING";
+	states[5] = "SLEEPING";
+	states[6] = "STOPPED";
+
+	kprintf("Process Info:");
+
+	/*Id */
+	pValue(buf->pid, p, 6);
+	kprintf("\nID: %s", p);
+
+	/*Priority */
+	pValue(buf->priority, priority, 11);
+	kprintf("\nPRIORITY: %s", priority);
+
+	/*U-time */
+	pValue(buf->utime, utime, 8);
+	kprintf("\nU-TIME: %s", utime);
+
+	/*K-time */
+	pValue(buf->ktime, ktime, 10);
+	kprintf("\nK-TIME: %s", ktime);
+
+	/*Counter*/
+	pValue(buf->counter, counter, 10);
+	kprintf("\nCOUNTER: %s", counter);
+
+	kprintf("\nSTATE: %s", states[(int)buf->state]);
+}

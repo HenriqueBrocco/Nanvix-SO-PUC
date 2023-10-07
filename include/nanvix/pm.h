@@ -207,6 +207,20 @@
 		/**@}*/
 	};
 
+	/**
+	 * @brief Process buffer
+	 */
+	struct process_buf {
+        	pid_t pid;
+        	unsigned state;
+        	int priority;
+			int counter;
+        	unsigned utime;
+        	unsigned ktime;
+	};
+
+	EXTERN int get_process_info(pid_t pid_id, struct process_buf *buf);
+
 	/* Forward definitions. */
 	EXTERN void bury(struct process *);
 	EXTERN void die(int);
