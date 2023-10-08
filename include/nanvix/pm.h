@@ -121,6 +121,17 @@
 	/**@}*/
 
 #ifndef _ASM_FILE_
+	/*
+	 * @brief Process buffer
+	 */
+	struct process_buf {
+        pid_t pid;
+        unsigned state;
+        int priority;
+        unsigned utime;
+        unsigned ktime;
+		int counter;
+	};
 
 	/**
 	 * @brief Process.
@@ -200,26 +211,13 @@
     	unsigned state;          /**< Current state.          */
     	int counter;             /**< Remaining quantum.      */
     	int priority;            /**< Process priorities.     */
+		int epriority;			 /**< Effective priority	  */
     	int nice;                /**< Nice for scheduling.    */
     	unsigned alarm;          /**< Alarm.                  */
 		struct process *next;    /**< Next process in a list. */
 		struct process **chain;  /**< Sleeping chain.         */
 		/**@}*/
 	};
-
-	/**
-	 * @brief Process buffer
-	 */
-	struct process_buf {
-        	pid_t pid;
-        	unsigned state;
-        	int priority;
-			int counter;
-        	unsigned utime;
-        	unsigned ktime;
-	};
-
-	EXTERN int get_process_info(pid_t pid_id, struct process_buf *buf);
 
 	/* Forward definitions. */
 	EXTERN void bury(struct process *);
@@ -299,6 +297,9 @@
 	EXTERN struct process *last_proc;
 	EXTERN pid_t next_pid;
 	EXTERN unsigned nprocs;
+
+	/* Assinatura da função do kernel */
+	EXTERN void do_get_process_info(pid_t pid, struct process_buf *buf);
 
 #endif /* _ASM_FILE */
 

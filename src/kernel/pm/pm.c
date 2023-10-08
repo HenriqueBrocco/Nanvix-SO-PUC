@@ -116,6 +116,7 @@ PUBLIC void pm_init(void)
 	IDLE->state = PROC_RUNNING;
 	IDLE->counter = PROC_QUANTUM;
 	IDLE->priority = PRIO_USER;
+	IDLE->epriority = PRIO_USER + NZERO; //Define a prioridade efetiva do IDLE
 	IDLE->nice = NZERO;
 	IDLE->alarm = 0;
 	IDLE->next = NULL;
@@ -125,7 +126,6 @@ PUBLIC void pm_init(void)
 
 	enable_interrupts();
 }
-
 
 /* Formats the text */
 void swap(char* s)
@@ -188,6 +188,7 @@ PUBLIC void do_get_process_info(pid_t pid, struct process_buf *buf){
 			buf->priority = proctab[aux].priority;
 			buf->utime = proctab[aux].utime;
 			buf->ktime = proctab[aux].ktime;
+			buf->counter = proctab[aux].counter;
 		}
 		aux++;
 	}
