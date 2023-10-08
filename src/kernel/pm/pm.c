@@ -116,8 +116,8 @@ PUBLIC void pm_init(void)
 	IDLE->state = PROC_RUNNING;
 	IDLE->counter = PROC_QUANTUM;
 	IDLE->priority = PRIO_USER;
-	IDLE->epriority = PRIO_USER + NZERO; //Define a prioridade efetiva do IDLE
 	IDLE->nice = NZERO;
+	IDLE->epriority = PRIO_USER + NZERO; //Define a prioridade efetiva do IDLE
 	IDLE->alarm = 0;
 	IDLE->next = NULL;
 	IDLE->chain = NULL;
@@ -128,7 +128,7 @@ PUBLIC void pm_init(void)
 }
 
 /* Formats the text */
-void swap(char* s)
+void rvr(char* s)
 {
 	int i, j;
 	char c;
@@ -141,7 +141,7 @@ void swap(char* s)
 	}
 }
 
-void chj(int n, char* s)
+void ips(int n, char* s)
 {
 	int i, sign;
 
@@ -158,14 +158,14 @@ void chj(int n, char* s)
 		s[i++] = '-';
 
 	s[i] = '\0';
-	swap(s);
+	rvr(s);
 }
 
 void pValue(int value, char* s, int padding)
 {
 	int i,len,size;
 
-	chj(value, s);
+	ips(value, s);
 	len = padding - kstrlen(s);
 
 	size = kstrlen(s);
@@ -176,11 +176,11 @@ void pValue(int value, char* s, int padding)
 }
 
 /* Show process request information */
+//pid_t --> typedef de signed
 PUBLIC void do_get_process_info(pid_t pid, struct process_buf *buf){
 	struct process *proc;
 	int aux = 1;
 
-	//Confere a tabela de processos
 	for (proc = FIRST_PROC; proc <= LAST_PROC; proc++){
 		if(proc->pid == pid){
 			buf->pid = proctab[aux].pid;
@@ -188,16 +188,14 @@ PUBLIC void do_get_process_info(pid_t pid, struct process_buf *buf){
 			buf->priority = proctab[aux].priority;
 			buf->utime = proctab[aux].utime;
 			buf->ktime = proctab[aux].ktime;
-			buf->counter = proctab[aux].counter;
 		}
 		aux++;
 	}
 
 	char p[26];
 	char priority[26];
-	char utime[26];
-	char ktime[26];
-	char counter[26];
+	char utime   [26];
+	char ktime   [26];
 
 	const char *states[7];
 	states[0] = "DEAD";
@@ -210,25 +208,21 @@ PUBLIC void do_get_process_info(pid_t pid, struct process_buf *buf){
 
 	kprintf("Process Info:");
 
-	/*Id */
+	//Id
 	pValue(buf->pid, p, 6);
 	kprintf("\nID: %s", p);
 
-	/*Priority */
+	//Priority
 	pValue(buf->priority, priority, 11);
 	kprintf("\nPRIORITY: %s", priority);
 
-	/*U-time */
+	//U-time 
 	pValue(buf->utime, utime, 8);
 	kprintf("\nU-TIME: %s", utime);
 
-	/*K-time */
+	//K-time 
 	pValue(buf->ktime, ktime, 10);
 	kprintf("\nK-TIME: %s", ktime);
-
-	/*Counter*/
-	pValue(buf->counter, counter, 10);
-	kprintf("\nCOUNTER: %s", counter);
 
 	kprintf("\nSTATE: %s", states[(int)buf->state]);
 }

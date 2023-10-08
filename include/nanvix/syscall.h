@@ -22,7 +22,6 @@
 #define NANVIX_SYSCALL_H_
 
 	#include <nanvix/const.h>
-	#include <nanvix/pm.h>
 	#include <sys/stat.h>
 	#include <sys/times.h>
 	#include <sys/types.h>
@@ -30,9 +29,10 @@
 	#include <signal.h>
 	#include <ustat.h>
 	#include <utime.h>
+	#include <nanvix/pm.h>
 
 	/* Number of system calls. */
-	#define NR_SYSCALLS 51
+	#define NR_SYSCALLS 52
 
 	/* System call numbers. */
 	#define NR_alarm     0
@@ -83,10 +83,11 @@
 	#define NR_shutdown 45
  	#define NR_ps       46
  	#define NR_gticks   47
- 	#define NR_semget   48
- 	#define NR_semctl   49
- 	#define NR_semop    50
-	#define NR_getprocessinfo  52
+	#define NR_get_process 48
+ 	#define NR_semget   49
+ 	#define NR_semctl   50
+ 	#define NR_semop    51
+	
 
 #ifndef _ASM_FILE_
 
@@ -265,11 +266,11 @@
 	 * Get system ticks since initialization
 	 */
 	EXTERN int sys_gticks(void);
-	
+
 	/*
 	 * Get process info
 	 */
-	EXTERN void sys_get_process_info(pid_t pid, struct process_buf *buf);
+	EXTERN void sys_get_process_info( pid_t pid, struct process_buf *buf );
 
 #endif /* _ASM_FILE_ */
 

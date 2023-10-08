@@ -151,6 +151,7 @@ found:
 	proc->cktime = 0;
 	proc->priority = curr_proc->priority;
 	proc->nice = curr_proc->nice;
+	proc->epriority = curr_proc->priority + curr_proc->nice;
 	proc->alarm = 0;
 	proc->next = NULL;
 	proc->chain = NULL;

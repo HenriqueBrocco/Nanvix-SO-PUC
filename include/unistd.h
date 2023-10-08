@@ -23,8 +23,8 @@
 
 	#include <sys/stat.h>
 	#include <sys/types.h>
-	#include <fcntl.h>
 	#include <nanvix/pm.h>
+	#include <fcntl.h>
 
 	/* Tests for access(). */
 	#define F_OK 0 /* File exists. */

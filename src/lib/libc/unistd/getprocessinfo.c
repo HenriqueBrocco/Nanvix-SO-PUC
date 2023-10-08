@@ -17,36 +17,33 @@
  * along with Nanvix. If not, see <http://www.gnu.org/licenses/>.
  */
 
-#include <nanvix/syscall.h>
 #include <unistd.h>
 #include <errno.h>
 #include <nanvix/pm.h>
+#include <nanvix/syscall.h>
 
-/**
+/*
  * @brief Get the process info
  */
-ssize_t getprocessinfo(pid_t pid, struct process_buf *buf)
+ssize_t getprocessinfo(int id, struct process_buf *buf)
 {
-    ssize_t ret;
+	pid_t pid = (pid_t)id;
+	ssize_t ret;
 
-	__asm__ volatile(
+	__asm__ volatile (
 		"int $0x80"
 		: "=a" (ret)
-		: "0" (NR_getprocessinfo),
+		: "0" (NR_get_process),
 		  "b" (pid),
-		  "c" (buf) 
+		  "c" (buf)
 	);
-    
-    /* 
-    * Error
-    */
+
+	/* Error. */
 	if (ret < 0)
 	{
 		errno = -ret;
-		return -1;
+		return (-1);
 	}
-	
-    return ((ssize_t)ret);
-}
-	
 
+	return ((ssize_t)ret);
+}

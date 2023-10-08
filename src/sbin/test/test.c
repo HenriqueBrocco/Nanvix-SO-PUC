@@ -229,6 +229,10 @@ static void work_io(void)
 static int sched_test0(void)
 {
 	pid_t pid;
+	struct tms timing;  /* Timing information. */
+	clock_t t0, t1;     /* Elapsed times.      */
+
+	t0 = times(&timing);	//Início contagem de tempo de execução
 
 	pid = fork();
 
@@ -244,6 +248,11 @@ static int sched_test0(void)
 	}
 
 	wait(NULL);
+	
+	t1 = times(&timing);	//Fim contagem de tempo de execução
+
+	if (flags & VERBOSE)
+		printf("  Elapsed of the test waiting for child: %d\n", t1 - t0);	//Tempo total e mostragem na tela
 
 	return (0);
 }
@@ -259,6 +268,10 @@ static int sched_test0(void)
 static int sched_test1(void)
 {
 	pid_t pid;
+	struct tms timing;  /* Timing information. */
+	clock_t t0, t1;     /* Elapsed times.      */
+
+	t0 = times(&timing);	//Início contagem de tempo de execução
 
 	pid = fork();
 
@@ -283,6 +296,11 @@ static int sched_test1(void)
 
 	wait(NULL);
 
+	t1 = times(&timing);	//Fim contagem de tempo de execução
+
+	if (flags & VERBOSE)
+		printf("  Elapsed of the test dynamic priorities: %d\n", t1 - t0);	//Tempo total e mostragem na tela
+
 	return (0);
 }
 
@@ -296,6 +314,11 @@ static int sched_test1(void)
 static int sched_test2(void)
 {
 	pid_t pid[4];
+
+	clock_t t0, t1;	    	/* Elapsed times.      */
+   	struct tms timing;	/* Timing information. */
+    
+  	t0 = times(&timing);	//Início contagem de tempo de execução
 
 	for (int i = 0; i < 4; i++)
 	{
@@ -336,6 +359,11 @@ static int sched_test2(void)
 		}
 	}
 
+	t1 = times(&timing);	//Fim contagem de tempo de execução
+
+	if (flags & VERBOSE)
+		printf("  Elapsed of the test scheduler stress 0: %d\n", t1 - t0);	//Tempo total e mostragem na tela
+
 	return (0);
 }
 
@@ -351,6 +379,11 @@ static int sched_test3(void)
 	pid_t child;
 	pid_t father;
 
+	clock_t t0, t1;    	/* Elapsed times.      */
+   	struct tms timing;	/* Timing information. */
+    
+  	t0 = times(&timing);	//Início contagem de tempo de execução
+
 	father = getpid();
 
 	fork();
@@ -365,6 +398,11 @@ static int sched_test3(void)
 	/* Die. */
 	if (getpid() != father)
 		_exit(EXIT_SUCCESS);
+
+	t1 = times(&timing);	//Fim contagem de tempo de execução
+
+   	if (flags & VERBOSE)
+		printf("  Elapsed of the test scheduler stress 1: %d\n", t1 - t0);	//Tempo total e mostragem na tela
 
 	return (0);
 }
@@ -639,12 +677,14 @@ int main(int argc, char **argv)
 		/* Scheduling test. */
 		else if (!strcmp(argv[i], "sched"))
 		{
-			printf("Scheduling Tests\n");
-			printf("  waiting for child  [%s]\n",
+			 printf("Scheduling Tests\n");
+
+          	  	 printf("Scheduling Tests\n");
+			 printf("  waiting for child  [%s]\n",
 				(!sched_test0()) ? "PASSED" : "FAILED");
-			printf("  dynamic priorities [%s]\n",
+			 printf("  dynamic priorities [%s]\n",
 				(!sched_test1()) ? "PASSED" : "FAILED");
-			printf("  scheduler stress   [%s]\n",
+			 printf("  scheduler stress   [%s]\n",
 				(!sched_test2() && !sched_test3()) ? "PASSED" : "FAILED");
 		}
 

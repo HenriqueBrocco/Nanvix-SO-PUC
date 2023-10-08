@@ -17,13 +17,13 @@
  * along with Nanvix. If not, see <http://www.gnu.org/licenses/>.
  */
 
+#include <sys/types.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <signal.h>
 #include <nanvix/pm.h>
 #include <unistd.h>
-#include <signal.h>
-#include <sys/types.h>
 
 /* Software versioning. */
 #define VERSION_MAJOR 1 /* Major version. */
@@ -32,7 +32,9 @@
 /* Default Process name. */
 #define PROCESS_DEFAULT 0
 
-/* Program arguments. */
+/*
+ * Program arguments.
+ */
 struct process_buf *buf; //buffer with the informations of the process
 pid_t pid; /* ID of process. */
 
@@ -56,7 +58,7 @@ static void version(void)
 static void usage(void)
 {
 	printf("Usage: getprocessinfo [options] <pid>\n\n");
-	printf("Brief: Sends information about the process.\n\n");
+	printf("Brief: Sends a signal to a process.\n\n");
 	printf("Options:\n");
 	printf("  --help             Display this information and exit\n");
 	printf("  --version          Display program version and exit\n");
@@ -65,7 +67,7 @@ static void usage(void)
 }
 
 /*
- * Gets process number.
+ * Gets number of the process.
  */
 static void getargs(int argc, char *const argv[])
 {
@@ -100,8 +102,10 @@ static void getargs(int argc, char *const argv[])
 int main(int argc, char *const argv[])
 {
 	getargs(argc, argv);
-	if (getprocessinfo(pid, buf) > 0)
+
+	if (getprocessinfo(pid, buf) > 0){
         return 0;
-    else 
+    } else {
         return -1;
+    }
 }

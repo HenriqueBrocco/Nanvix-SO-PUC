@@ -145,9 +145,10 @@ nim:
 sleep: 
 	$(CC) $(CFLAGS) $(LDFLAGS) -D TESTE sleep/*.c -o $(UBINDIR)/sleep $(LIBDIR)/libc.a
 
-# Builds getprocessinfo
-getprocessinfo:
-	$(CC) $(CFLAGS) $(LDFLAGS) getprocessinfo/*.c -o $(UBINDIR)/getprocessinfo $(LIBDIR)/libc.a
+# Builds getprocessinfo.
+getprocessinfo: 
+	$(CC) $(CFLAGS) $(LDFLAGS) -D TESTE getprocessinfo/*.c -o $(UBINDIR)/getprocessinfo $(LIBDIR)/libc.a
+
 
 # Clean compilation files.
 clean:
